@@ -1,3 +1,5 @@
+package io.ylab.task1;
+
 import java.util.Random;
 import java.util.Scanner;
 
@@ -29,15 +31,13 @@ public class Guess {
         maxAttempts--;
         count++;
 
-        if (number == userNumber) {
-          result = "Ты угадал с " + count + " попытки";
-          break;
-        }
-
         if (number < userNumber) {
           System.out.println("Мое число меньше! У тебя осталось " + maxAttempts + " попыток");
-        } else {
+        } else if (number > userNumber) {
           System.out.println("Мое число больше! У тебя осталось " + maxAttempts + " попыток");
+        } else {
+          result = "Ты угадал с " + count + " попытки";
+          break;
         }
       }
     }
