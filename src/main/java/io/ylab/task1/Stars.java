@@ -1,3 +1,5 @@
+package io.ylab.task1;
+
 import java.util.Scanner;
 
 /**
