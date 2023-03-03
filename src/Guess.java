@@ -34,12 +34,10 @@ public class Guess {
           break;
         }
 
-        if (maxAttempts > 0) {
-          if (number < userNumber) {
-            System.out.println("Мое число меньше! У тебя осталось " + maxAttempts + " попыток");
-          } else {
-            System.out.println("Мое число больше! У тебя осталось " + maxAttempts + " попыток");
-          }
+        if (number < userNumber) {
+          System.out.println("Мое число меньше! У тебя осталось " + maxAttempts + " попыток");
+        } else {
+          System.out.println("Мое число больше! У тебя осталось " + maxAttempts + " попыток");
         }
       }
     }
