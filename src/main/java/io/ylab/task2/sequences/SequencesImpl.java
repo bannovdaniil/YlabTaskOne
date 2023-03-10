@@ -1,11 +1,14 @@
 package io.ylab.task2.sequences;
 
+import java.math.BigDecimal;
+
 public class SequencesImpl implements SequenceGenerator {
   @Override
   public void a(int n) {
     StringBuilder sb = new StringBuilder("A. ");
     long seed = 2;
-    while (n-- > 0) {
+    int count = 0;
+    while (count++ < n) {
       sb.append(seed);
       sb.append(", ");
       seed += 2;
@@ -18,7 +21,8 @@ public class SequencesImpl implements SequenceGenerator {
   public void b(int n) {
     StringBuilder sb = new StringBuilder("B. ");
     long seed = 1;
-    while (n-- > 0) {
+    int count = 0;
+    while (count++ < n) {
       sb.append(seed);
       sb.append(", ");
       seed += 2;
@@ -30,13 +34,14 @@ public class SequencesImpl implements SequenceGenerator {
   @Override
   public void c(int n) {
     StringBuilder sb = new StringBuilder("C. ");
-    long seed = 1;
-    long count = 2;
-    while (n-- > 0) {
-      sb.append(seed);
+    long result = 1;
+    long seed = 2;
+    int count = 0;
+    while (count++ < n) {
+      sb.append(result);
       sb.append(", ");
-      seed = count * count;
-      count++;
+      result = seed * seed;
+      seed++;
     }
     sb.delete(sb.length() - 2, sb.length() - 1);
     System.out.println(sb);
@@ -45,13 +50,14 @@ public class SequencesImpl implements SequenceGenerator {
   @Override
   public void d(int n) {
     StringBuilder sb = new StringBuilder("D. ");
-    long seed = 1;
-    int count = 2;
-    while (n-- > 0) {
-      sb.append(seed);
+    long result = 1;
+    int seed = 2;
+    int count = 0;
+    while (count++ < n) {
+      sb.append(result);
       sb.append(", ");
-      seed = (long) Math.pow(count, 3);
-      count++;
+      result = (long) Math.pow(seed, 3);
+      seed++;
     }
     sb.delete(sb.length() - 2, sb.length() - 1);
     System.out.println(sb);
@@ -112,11 +118,11 @@ public class SequencesImpl implements SequenceGenerator {
   public void i(int n) {
     StringBuilder sb = new StringBuilder("I. ");
     int count = 1;
-    long seed = 1;
+    BigDecimal seed = new BigDecimal(1);
     while (count++ <= n) {
       sb.append(seed);
       sb.append(", ");
-      seed *= count;
+      seed = seed.multiply(new BigDecimal(count));
     }
     sb.delete(sb.length() - 2, sb.length() - 1);
     System.out.println(sb);
@@ -131,9 +137,7 @@ public class SequencesImpl implements SequenceGenerator {
     long result = 1;
     while (count++ <= n) {
       sb.append(result);
-      if (count < n) {
-        sb.append(", ");
-      }
+      sb.append(", ");
       result = slow + fast;
       slow = fast;
       fast = result;

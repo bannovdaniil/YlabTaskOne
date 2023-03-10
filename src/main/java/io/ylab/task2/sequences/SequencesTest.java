@@ -4,15 +4,16 @@ public class SequencesTest {
   public static void main(String[] args) {
     SequenceGenerator sequenceGenerator = new SequencesImpl();
 
-    sequenceGenerator.a(10);
-    sequenceGenerator.b(10);
-    sequenceGenerator.c(10);
-    sequenceGenerator.d(10);
-    sequenceGenerator.e(10);
-    sequenceGenerator.f(10);
-    sequenceGenerator.g(10);
-    sequenceGenerator.h(10);
-    sequenceGenerator.i(10);
-    sequenceGenerator.j(10);
+    int n = 30;
+    sequenceGenerator.a(n);
+    sequenceGenerator.b(n);
+    sequenceGenerator.c(n);
+    sequenceGenerator.d(n);
+    sequenceGenerator.e(n);
+    sequenceGenerator.f(n);
+    sequenceGenerator.g(n);
+    sequenceGenerator.h(n);
+    sequenceGenerator.i(n);
+    sequenceGenerator.j(n);
   }
 }
