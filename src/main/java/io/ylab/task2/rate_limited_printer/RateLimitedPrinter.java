@@ -6,7 +6,7 @@ public class RateLimitedPrinter {
 
   public RateLimitedPrinter(int interval) {
     this.interval = interval;
-    lastTime = System.currentTimeMillis();
+    lastTime = 0;
   }
 
   public void print(String message) {
