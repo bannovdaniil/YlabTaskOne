@@ -10,6 +10,10 @@ class SnilsValidatorImplTests {
   @ParameterizedTest
   @DisplayName("SNILS validate")
   @CsvSource({
+      "666-850-337 71, false",
+      "661-888-337 71, false",
+      "611-818-333 71, false",
+      "022-297-426 36, true",
       "123, false",
       "123-123-123-123, false",
       "871-567-120 00, false",
@@ -17,7 +21,6 @@ class SnilsValidatorImplTests {
       "612-850-337 71, false",
       "01468870570, false",
       "90114404441, true",
-      "022-297-426 36, true",
       "178-842-615 20, true",
       "439-785-289 54, true",
       "049-672-517 97, true",

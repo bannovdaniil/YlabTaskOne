@@ -37,8 +37,24 @@ public class SnilsValidatorImpl implements SnilsValidator {
 
     int checkSum = getCheckSumFromNumber(onlyNumber);
     long realCheckSum = 0;
+    int repeatCount = 1;
+    int lastDigit = -1;
+
     for (int i = 0; i < 9; i++) {
-      realCheckSum += (long) (9 - i) * Character.digit(onlyNumber.charAt(i), 10);
+      if (i % 3 == 0) {
+        repeatCount = 1;
+      }
+      int digit = Character.digit(onlyNumber.charAt(i), 10);
+      realCheckSum += (long) (9 - i) * digit;
+      if (digit == lastDigit) {
+        repeatCount++;
+        if (repeatCount == 3) {
+          return false;
+        }
+      } else {
+        repeatCount = 1;
+      }
+      lastDigit = digit;
     }
 
     if (realCheckSum > 100) {
