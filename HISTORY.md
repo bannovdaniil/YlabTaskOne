@@ -16,5 +16,7 @@ https://university.ylab.io/
 - последовательности с функциональным интерфейсом
 - комплексные числа
 - jUnut тесты для комплексных чисел
+- StatsAccumulator + jUnit test
+- Снилс валидатор + jUnit test
 - 
 
