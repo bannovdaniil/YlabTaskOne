@@ -1,4 +1,4 @@
-package io.ylab.task2.snils;
+package io.ylab.task2.snils_validator;
 
 public interface SnilsValidator {
   /**

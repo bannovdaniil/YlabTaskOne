@@ -1,4 +1,4 @@
-package io.ylab.task2.snils;
+package io.ylab.task2.snils_validator;
 
 /**
  * СНИЛС (страховой номер индивидуального лицевого счета) состоит из 11 цифр:

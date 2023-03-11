@@ -1,4 +1,4 @@
-package io.ylab.task2.sequences;
+package io.ylab.task2.sequence_generator;
 
 public interface SequenceGenerator {
   /**

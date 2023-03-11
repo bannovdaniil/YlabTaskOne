@@ -1,4 +1,4 @@
-package io.ylab.task2.complex;
+package io.ylab.task2.complex_number;
 
 /**
  * 1. Создание нового числа по действительной части (конструктор с 1 параметром)
@@ -54,12 +54,12 @@ public class ComplexNumber {
 
   @Override
   public String toString() {
-    return "ComplexNumber{" +
+    return "(" +
         real +
         " + " +
         imaginary +
         "i" +
-        '}';
+        ')';
   }
 
   @Override

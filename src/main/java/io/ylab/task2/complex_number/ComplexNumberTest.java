@@ -1,4 +1,4 @@
-package io.ylab.task2.complex;
+package io.ylab.task2.complex_number;
 
 public class ComplexNumberTest {
   public static void main(String[] args) {
@@ -10,13 +10,13 @@ public class ComplexNumberTest {
     System.out.println(cn2);
 
     ComplexNumber cnAdd = cn1.add(cn2);
-    System.out.println("Сложение: " + cnAdd);
+    System.out.println("Сложение: " + cn1 + " + " + cn2 + " = " + cnAdd);
 
     ComplexNumber cnSub = cn1.sub(cn2);
-    System.out.println("Вычитание: " + cnSub);
+    System.out.println("Вычитание: " + cn1 + " - " + cn2 + " = " + cnSub);
 
     ComplexNumber cnMul = cn1.multiply(cn2);
-    System.out.println("Умножение: " + cnMul);
+    System.out.println("Умножение: " + cn1 + " * " + cn2 + " = " + cnMul);
 
     printModule(cn1);
     printModule(cn2);

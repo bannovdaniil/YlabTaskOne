@@ -1,4 +1,4 @@
-package io.ylab.task2.stats;
+package io.ylab.task2.stats_accumulator;
 
 public class StatsAccumulatorTest {
   public static void main(String[] args) {

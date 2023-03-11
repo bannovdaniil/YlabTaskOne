@@ -1,4 +1,4 @@
-package io.ylab.task2.rate;
+package io.ylab.task2.rate_limited_printer;
 
 public class RateLimitedPrinterTest {
   public static void main(String[] args) {

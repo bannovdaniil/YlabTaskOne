@@ -1,4 +1,4 @@
-package io.ylab.task2.stats;
+package io.ylab.task2.stats_accumulator;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;

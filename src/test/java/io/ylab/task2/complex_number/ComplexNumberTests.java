@@ -1,4 +1,4 @@
-package io.ylab.task2.complex;
+package io.ylab.task2.complex_number;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
