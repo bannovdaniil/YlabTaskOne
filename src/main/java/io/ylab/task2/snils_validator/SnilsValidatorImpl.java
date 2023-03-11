@@ -23,13 +23,9 @@ package io.ylab.task2.snils_validator;
  */
 public class SnilsValidatorImpl implements SnilsValidator {
 
-  private static int getCheckSumFromNumber(String onlyNumber) {
-    return Integer.parseInt(onlyNumber.substring(onlyNumber.length() - 2), 10);
-  }
-
   @Override
   public boolean validate(String snils) {
-    String onlyNumber = snils.replaceAll("[^\\d]", "");
+    String onlyNumber = snils.replaceAll("\\D", "");
 
     if (onlyNumber.length() != 11) {
       return false;
@@ -37,24 +33,10 @@ public class SnilsValidatorImpl implements SnilsValidator {
 
     int checkSum = getCheckSumFromNumber(onlyNumber);
     long realCheckSum = 0;
-    int repeatCount = 1;
-    int lastDigit = -1;
 
     for (int i = 0; i < 9; i++) {
-      if (i % 3 == 0) {
-        repeatCount = 1;
-      }
       int digit = Character.digit(onlyNumber.charAt(i), 10);
-      realCheckSum += (long) (9 - i) * digit;
-      if (digit == lastDigit) {
-        repeatCount++;
-        if (repeatCount == 3) {
-          return false;
-        }
-      } else {
-        repeatCount = 1;
-      }
-      lastDigit = digit;
+      realCheckSum += (9L - i) * digit;
     }
 
     if (realCheckSum > 100) {
@@ -66,4 +48,9 @@ public class SnilsValidatorImpl implements SnilsValidator {
 
     return checkSum == realCheckSum;
   }
+
+  private static int getCheckSumFromNumber(String onlyNumber) {
+    return Integer.parseInt(onlyNumber.substring(onlyNumber.length() - 2), 10);
+  }
+
 }
