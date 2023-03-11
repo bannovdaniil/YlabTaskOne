@@ -20,13 +20,19 @@ package io.ylab.task2.snils_validator;
  * если остаток от деления равен 100, то контольное число равно 0;
  * в противном случае контрольное число равно вычисленному остатку от деления.
  * Сравнить полученное контрольное число с двумя младшими разрядами СНИЛС. Если они равны, то СНИЛС верный.
+ * <p>
+ * XXXXXXXXXXX — маска ввода без разделителей.
+ * XXX-XXX-XXX-XX — маска ввода с разделителями.
+ * XXX-XXX-XXX XX — маска ввода с разделителями и с отделением контрольного числа.
  */
 public class SnilsValidatorImpl implements SnilsValidator {
 
   @Override
   public boolean validate(String snils) {
+    if (!checkCnilsFormat(snils)) {
+      return false;
+    }
     String onlyNumber = snils.replaceAll("\\D", "");
-
     if (onlyNumber.length() != 11) {
       return false;
     }
@@ -47,6 +53,14 @@ public class SnilsValidatorImpl implements SnilsValidator {
     }
 
     return checkSum == realCheckSum;
+  }
+
+  private boolean checkCnilsFormat(String snils) {
+    boolean result;
+    result = snils.matches("^\\d{11}$");
+    result |= snils.matches("^\\d{3}-\\d{3}-\\d{3}[- ]\\d{2}$");
+
+    return result;
   }
 
   private static int getCheckSumFromNumber(String onlyNumber) {

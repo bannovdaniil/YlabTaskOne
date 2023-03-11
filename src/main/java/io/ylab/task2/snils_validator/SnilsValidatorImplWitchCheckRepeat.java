@@ -12,6 +12,9 @@ public class SnilsValidatorImplWitchCheckRepeat implements SnilsValidator {
 
   @Override
   public boolean validate(String snils) {
+    if (!checkCnilsFormat(snils)) {
+      return false;
+    }
     String onlyNumber = snils.replaceAll("\\D", "");
 
     if (onlyNumber.length() != 11) {
@@ -45,6 +48,14 @@ public class SnilsValidatorImplWitchCheckRepeat implements SnilsValidator {
     }
 
     return checkSum == realCheckSum;
+  }
+
+  private boolean checkCnilsFormat(String snils) {
+    boolean result;
+    result = snils.matches("^\\d{11}$");
+    result |= snils.matches("^\\d{3}-\\d{3}-\\d{3}[- ]\\d{2}$");
+
+    return result;
   }
 
   private static int getCheckSumFromNumber(String onlyNumber) {
