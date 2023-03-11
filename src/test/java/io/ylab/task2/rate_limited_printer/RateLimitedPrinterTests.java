@@ -34,7 +34,7 @@ class RateLimitedPrinterTests {
       rateLimitedPrinter.print("time");
     }
     result = System.currentTimeMillis() - result;
-    result = result / 1000;
+    result = result / interval;
 
     String[] countMessage = testOut.toString().split("\n");
     long expected = countMessage.length - 1;
