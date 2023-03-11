@@ -3,6 +3,7 @@ package io.ylab.task2.sequences;
 import java.math.BigDecimal;
 
 public class SequencesImpl implements SequenceGenerator {
+
   @Override
   public void a(int n) {
     StringBuilder sb = new StringBuilder("A. ");
@@ -13,8 +14,7 @@ public class SequencesImpl implements SequenceGenerator {
       sb.append(", ");
       seed += 2;
     }
-    sb.delete(sb.length() - 2, sb.length() - 1);
-    System.out.println(sb);
+    printSequence(sb);
   }
 
   @Override
@@ -27,8 +27,7 @@ public class SequencesImpl implements SequenceGenerator {
       sb.append(", ");
       seed += 2;
     }
-    sb.delete(sb.length() - 2, sb.length() - 1);
-    System.out.println(sb);
+    printSequence(sb);
   }
 
   @Override
@@ -43,8 +42,7 @@ public class SequencesImpl implements SequenceGenerator {
       result = seed * seed;
       seed++;
     }
-    sb.delete(sb.length() - 2, sb.length() - 1);
-    System.out.println(sb);
+    printSequence(sb);
   }
 
   @Override
@@ -59,8 +57,7 @@ public class SequencesImpl implements SequenceGenerator {
       result = (long) Math.pow(seed, 3);
       seed++;
     }
-    sb.delete(sb.length() - 2, sb.length() - 1);
-    System.out.println(sb);
+    printSequence(sb);
   }
 
   @Override
@@ -71,8 +68,7 @@ public class SequencesImpl implements SequenceGenerator {
       sb.append(count % 2 == 0 ? -1 : 1);
       sb.append(", ");
     }
-    sb.delete(sb.length() - 2, sb.length() - 1);
-    System.out.println(sb);
+    printSequence(sb);
   }
 
   @Override
@@ -83,8 +79,7 @@ public class SequencesImpl implements SequenceGenerator {
       sb.append(count % 2 == 0 ? -count : count);
       sb.append(", ");
     }
-    sb.delete(sb.length() - 2, sb.length() - 1);
-    System.out.println(sb);
+    printSequence(sb);
   }
 
   @Override
@@ -97,8 +92,7 @@ public class SequencesImpl implements SequenceGenerator {
       sb.append(", ");
       seed = count * count;
     }
-    sb.delete(sb.length() - 2, sb.length() - 1);
-    System.out.println(sb);
+    printSequence(sb);
   }
 
   @Override
@@ -110,8 +104,7 @@ public class SequencesImpl implements SequenceGenerator {
       sb.append(count % 2 == 0 ? 0 : seed++);
       sb.append(", ");
     }
-    sb.delete(sb.length() - 2, sb.length() - 1);
-    System.out.println(sb);
+    printSequence(sb);
   }
 
   @Override
@@ -124,8 +117,7 @@ public class SequencesImpl implements SequenceGenerator {
       sb.append(", ");
       seed = seed.multiply(new BigDecimal(count));
     }
-    sb.delete(sb.length() - 2, sb.length() - 1);
-    System.out.println(sb);
+    printSequence(sb);
   }
 
   @Override
@@ -142,8 +134,15 @@ public class SequencesImpl implements SequenceGenerator {
       slow = fast;
       fast = result;
     }
-    sb.delete(sb.length() - 2, sb.length() - 1);
+    printSequence(sb);
+  }
+
+  private static void printSequence(StringBuilder sb) {
+    if (sb.length() > 3) {
+      sb.delete(sb.length() - 2, sb.length() - 1);
+    }
     System.out.println(sb);
   }
+
 
 }
