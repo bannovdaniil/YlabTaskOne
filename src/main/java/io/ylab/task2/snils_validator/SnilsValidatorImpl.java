@@ -29,7 +29,7 @@ public class SnilsValidatorImpl implements SnilsValidator {
 
   @Override
   public boolean validate(String snils) {
-    if (!checkCnilsFormat(snils)) {
+    if (!isValidCnilsFormat(snils)) {
       return false;
     }
     String onlyNumber = snils.replaceAll("\\D", "");
@@ -55,7 +55,7 @@ public class SnilsValidatorImpl implements SnilsValidator {
     return checkSum == realCheckSum;
   }
 
-  private boolean checkCnilsFormat(String snils) {
+  private boolean isValidCnilsFormat(String snils) {
     boolean result;
     result = snils.matches("^\\d{11}$");
     result |= snils.matches("^\\d{3}-\\d{3}-\\d{3}[- ]\\d{2}$");
