@@ -5,6 +5,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * Считает хешкод и проверяет количество.
+ */
 public class ValidatorWithSizeAndHash {
   private final File file;
   private long size;

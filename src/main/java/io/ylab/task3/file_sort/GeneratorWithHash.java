@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Random;
 
+/**
+ * Дополнительно, считает хешкод, для качественно проверки.
+ */
 public class GeneratorWithHash {
   private long hashCode = 0L;
 

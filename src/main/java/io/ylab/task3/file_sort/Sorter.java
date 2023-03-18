@@ -10,8 +10,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * 1_048_575 = размер файла инициализации 21мб, быстрее на 20%
+ * 524_288 = размер файла инициализации 11мб, быстрее на 10%
+ * 262_144 = размер файла инициализации 5мб, быстрее на 10%
+ */
 public class Sorter {
-  private final static int BLOCK_SIZE = 1_048_575;//262_144;
+  private final static int BLOCK_SIZE = 1_048_575;
 
   public File sortFile(File dataFile) throws IOException {
     List<File> tempFileList = new ArrayList<>();
