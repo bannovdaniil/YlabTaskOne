@@ -41,6 +41,9 @@ public class TransliteratorImpl implements Transliterator {
 
   @Override
   public String transliterate(String source) {
+    if (source == null) {
+      return "";
+    }
     StringBuilder transliteString = new StringBuilder();
 
     for (var currentChar : source.toCharArray()) {
