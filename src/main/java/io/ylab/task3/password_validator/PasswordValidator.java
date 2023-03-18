@@ -14,14 +14,14 @@ public class PasswordValidator {
     boolean isValid = true;
     try {
 
-      if (checkMaskCharacter(login)) {
+      if (isCorrectMaskCharacter(login)) {
         throw new WrongLoginException("Логин содержит недопустимые символы");
       }
       if (login.length() >= MAX_LENGTH) {
         throw new WrongLoginException("Логин слишком длинный");
       }
 
-      if (checkMaskCharacter(password)) {
+      if (isCorrectMaskCharacter(password)) {
         throw new WrongPasswordException("Пароль содержит недопустимые символы");
       }
       if (password.length() >= MAX_LENGTH) {
@@ -39,11 +39,15 @@ public class PasswordValidator {
     return isValid;
   }
 
-  private static boolean checkMaskCharacter(String word) {
-    return !(word.length() > 0 && word.matches(LOGIN_MASK));
+  private static boolean isCorrectMaskCharacter(String word) {
+    return !(
+        word != null
+            && word.length() > 0
+            && word.matches(LOGIN_MASK)
+    );
   }
 
-  private static boolean checkMaskCharacterNeedAll(String word) {
+  private static boolean isCorrectMaskCharacterMaskCharacterNeedAll(String word) {
     return (word.matches(LOGIN_MASK)
         & word.matches(LOGIN_MASK_AZ)
         & word.matches(LOGIN_MASK_NUM)

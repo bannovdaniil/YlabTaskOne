@@ -3,34 +3,40 @@ package io.ylab.task3.dated_map;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
-public class DatedMapImpl extends HashMap implements DatedMap {
-  private final Map<String, Date> storeKeyDate = new HashMap<>();
+public class DatedMapImpl implements DatedMap {
+  private final Map<String, Map.Entry<String, Date>> store = new HashMap<>();
 
   @Override
   public void put(String key, String value) {
-    super.put(key, value);
-    storeKeyDate.put(key, new Date());
+    store.put(key, Map.entry(value, new Date()));
   }
 
   @Override
   public String get(String key) {
-    return (String) super.get(key);
+    Map.Entry<String, Date> entry = store.get(key);
+    return entry == null ? null : entry.getKey();
   }
 
   @Override
   public boolean containsKey(String key) {
-    return super.containsKey(key);
+    return store.containsKey(key);
   }
 
   @Override
   public void remove(String key) {
-    super.remove(key);
-    storeKeyDate.remove(key);
+    store.remove(key);
+  }
+
+  @Override
+  public Set<String> keySet() {
+    return store.keySet();
   }
 
   @Override
   public Date getKeyLastInsertionDate(String key) {
-    return storeKeyDate.get(key);
+    Map.Entry<String, Date> entry = store.get(key);
+    return entry == null ? null : entry.getValue();
   }
 }

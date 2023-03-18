@@ -7,8 +7,6 @@ public class DateMapTest {
     testMethods(datedMap);
     DatedMap datedMap2 = new DatedMapImplTwoMap();
     testMethods(datedMap2);
-    DatedMap datedMap3 = new DatedMapImplWithEntry();
-    testMethods(datedMap3);
   }
 
   private static void testMethods(DatedMap datedMap) throws InterruptedException {

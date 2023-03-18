@@ -12,18 +12,6 @@ class DatedMapImplTests {
   private DatedMap datedMap;
 
   @ParameterizedTest
-  @DisplayName("Test Extends Map class")
-  @CsvSource({
-      "key1, value1, key2, value2",
-      "key4, value4, key3, value3",
-  })
-  void dateMap(String key1, String value1, String key2, String value2) {
-    datedMap = new DatedMapImpl();
-
-    testImpl(key1, value1, key2, value2);
-  }
-
-  @ParameterizedTest
   @DisplayName("Test Two Map")
   @CsvSource({
       "key1, value1, key2, value2",
@@ -42,7 +30,7 @@ class DatedMapImplTests {
       "key4, value4, key3, value3",
   })
   void dateMapWithEntry(String key1, String value1, String key2, String value2) {
-    datedMap = new DatedMapImplWithEntry();
+    datedMap = new DatedMapImpl();
 
     testImpl(key1, value1, key2, value2);
   }
