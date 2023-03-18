@@ -2,6 +2,11 @@ package io.ylab.task3.password_validator;
 
 public class PasswordValidatorTest {
   public static void main(String[] args) {
+    testLogin("");
+    testLogin("123");
+    testLogin("num");
+    testLogin("num_num");
+    testLogin("num_NUM_123");
     testLogin("goodLogin1234567890");
     testLogin("abc_ABC_1234567890_");
     testLogin("@badLogin");
