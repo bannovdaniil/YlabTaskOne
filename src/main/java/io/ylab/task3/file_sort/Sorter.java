@@ -11,27 +11,18 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Sorter {
-  private final static int BLOCK_SIZE = 65_535;
+  private final static int BLOCK_SIZE = 1_048_575;//262_144;
 
   public File sortFile(File dataFile) throws IOException {
     List<File> tempFileList = new ArrayList<>();
     try (Scanner scanner = new Scanner(new FileInputStream(dataFile))) {
-      int count = 0;
-      List<Long> block = new ArrayList<>();
-      while (scanner.hasNextLong()) {
-        long current = scanner.nextLong();
-        block.add(current);
-        if (count++ > BLOCK_SIZE) {
-          Collections.sort(block);
-          tempFileList.add(saveBlockToTempFile(block));
-          block = new ArrayList<>();
-          count = 0;
-        }
-      }
+      initSortBlocks(tempFileList, scanner);
+
       File resultFile = new File("data-sort.txt");
       if (resultFile.exists()) {
         resultFile.delete();
       }
+
       if (tempFileList.size() > 0) {
         File tempSortedFile = mergeSorted(tempFileList);
         Files.move(tempSortedFile.toPath(), resultFile.toPath());
@@ -40,6 +31,24 @@ public class Sorter {
     } catch (IOException ex) {
       ex.printStackTrace();
       return null;
+    }
+  }
+
+  private void initSortBlocks(List<File> tempFileList, Scanner scanner) throws IOException {
+    List<Long> block = new ArrayList<>();
+    while (scanner.hasNextLong()) {
+      long current = scanner.nextLong();
+      block.add(current);
+      if (block.size() >= BLOCK_SIZE) {
+        Collections.sort(block);
+        tempFileList.add(saveBlockToTempFile(block));
+        block = new ArrayList<>();
+      }
+    }
+
+    if (block.size() > 0) {
+      Collections.sort(block);
+      tempFileList.add(saveBlockToTempFile(block));
     }
   }
 
@@ -69,7 +78,7 @@ public class Sorter {
     try (PrintWriter pw = new PrintWriter(tempFile);
          Scanner sc1 = new Scanner(f1);
          Scanner sc2 = new Scanner(f2)) {
-      while (sc1.hasNextLong() && sc2.hasNextLong()) {
+      do {
         if (longFromFile1 == null) {
           longFromFile1 = getLongFromFile(sc1);
         }
@@ -92,7 +101,8 @@ public class Sorter {
             longFromFile2 = getLongFromFile(sc2);
           }
         }
-      }
+      } while (longFromFile1 != null && longFromFile2 != null);
+
       saveLastIfFirstIsNull(longFromFile1, longFromFile2, pw, sc2);
       saveLastIfFirstIsNull(longFromFile2, longFromFile1, pw, sc1);
       pw.flush();
@@ -100,7 +110,7 @@ public class Sorter {
     return tempFile;
   }
 
-  private static void saveLastIfFirstIsNull(Long nullLong, Long saveLong, PrintWriter pw, Scanner sc) {
+  private void saveLastIfFirstIsNull(Long nullLong, Long saveLong, PrintWriter pw, Scanner sc) {
     if (nullLong == null) {
       while (saveLong != null) {
         pw.println(saveLong);
@@ -109,7 +119,7 @@ public class Sorter {
     }
   }
 
-  private static Long getLongFromFile(Scanner sc) {
+  private Long getLongFromFile(Scanner sc) {
     return sc.hasNextLong() ? sc.nextLong() : null;
   }
 
