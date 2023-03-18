@@ -30,4 +30,3 @@ https://university.ylab.io/
 - 3.Org Structure
 - 4.PasswordValidator
 - 5.FileSort, создал дополнительную проверку по хешкоду и размеру.
-
