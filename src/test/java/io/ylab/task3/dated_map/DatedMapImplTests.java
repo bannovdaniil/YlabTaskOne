@@ -65,6 +65,20 @@ class DatedMapImplTests {
 
     expect = value2;
     expectDate = new Date();
+    datedMap.put(key1, value2);
+    Assertions.assertEquals(expect, datedMap.get(key1));
+
+    resultDate = datedMap.getKeyLastInsertionDate(key1);
+    Assertions.assertTrue(resultDate != null && (expectDate.before(resultDate) || expectDate.equals(resultDate)));
+
+    try {
+      Thread.sleep(1000L);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+
+    expect = value2;
+    expectDate = new Date();
     datedMap.put(key2, value2);
     Assertions.assertEquals(expect, datedMap.get(key2));
 
