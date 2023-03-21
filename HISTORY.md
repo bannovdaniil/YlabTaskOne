@@ -20,3 +20,13 @@ https://university.ylab.io/
 - Снилс валидатор + jUnit test
 - RateLimitedPrinter
 
+**2023-03-17**
+
+- 1.Transliterator
+- 2.DatedMap
+
+**2023-03-17**
+
+- 3.Org Structure
+- 4.PasswordValidator
+- 5.FileSort, создал дополнительную проверку по хешкоду и размеру.
