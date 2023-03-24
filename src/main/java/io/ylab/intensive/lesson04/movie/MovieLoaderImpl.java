@@ -1,6 +1,7 @@
 package io.ylab.intensive.lesson04.movie;
 
 import com.sun.jdi.InvalidTypeException;
+import io.ylab.intensive.lesson04.movie.model.Movie;
 
 import javax.sql.DataSource;
 import java.io.File;
@@ -19,7 +20,9 @@ public class MovieLoaderImpl implements MovieLoader {
 
   @Override
   public void loadData(File file) {
-    final String sql = "INSERT INTO movie " + " (year, length, title, subject, actors, actress, director, popularity, awards) " + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    final String sql = "INSERT INTO movie "
+        + " (year, length, title, subject, actors, actress, director, popularity, awards) "
+        + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     try (Scanner sc = new Scanner(file, Charset.forName("windows-1252"))) {
       String headerOfFile = sc.hasNext() ? sc.nextLine() : null;
@@ -31,27 +34,20 @@ public class MovieLoaderImpl implements MovieLoader {
 
         connection.setAutoCommit(false);
         while (sc.hasNext()) {
-          String[] movieInfo = sc.nextLine().split(";");
+          String movieInfo = sc.nextLine().trim();
+          Movie movie = stringParseToMovie(movieInfo);
 
-          String year = movieInfo[0];
-          String length = movieInfo[1];
-          String title = movieInfo[2];
-          String subject = movieInfo[3];
-          String actors = movieInfo[4];
-          String actress = movieInfo[5];
-          String director = movieInfo[6];
-          String popularity = movieInfo[7];
-          String awards = movieInfo[8];
+          setStatementIntOrNull(statement, 1, movie.getYear());
+          setStatementIntOrNull(statement, 2, movie.getLength());
+          setStatementStringOrNull(statement, 3, movie.getTitle());
 
-          setStatementIntOrNull(statement, 1, year);
-          setStatementIntOrNull(statement, 2, length);
-          setStatementStringOrNull(statement, 3, title);
-          setStatementStringOrNull(statement, 4, subject);
-          setStatementStringOrNull(statement, 5, actors);
-          setStatementStringOrNull(statement, 6, actress);
-          setStatementStringOrNull(statement, 7, director);
-          setStatementIntOrNull(statement, 8, popularity);
-          setBooleanOrNull(statement, 9, awards);
+          setStatementStringOrNull(statement, 4, movie.getSubject());
+          setStatementStringOrNull(statement, 5, movie.getActors());
+          setStatementStringOrNull(statement, 6, movie.getActress());
+
+          setStatementStringOrNull(statement, 7, movie.getDirector());
+          setStatementIntOrNull(statement, 8, movie.getPopularity());
+          setBooleanOrNull(statement, 9, movie.getAwards());
 
           statement.addBatch();
         }
@@ -80,24 +76,51 @@ public class MovieLoaderImpl implements MovieLoader {
     }
   }
 
-  private static void setBooleanOrNull(PreparedStatement statement, int position, String bool) throws SQLException {
-    if (bool.isEmpty()) {
+  private Movie stringParseToMovie(String movieInfoString) {
+    String[] movieInfo = movieInfoString.split(";");
+
+    return new Movie()
+        .setYear(setNullOrInt(movieInfo[0]))
+        .setLength(setNullOrInt(movieInfo[1]))
+        .setTitle(setNullOrString(movieInfo[2]))
+        .setSubject(setNullOrString(movieInfo[3]))
+        .setActors(setNullOrString(movieInfo[4]))
+        .setActress(setNullOrString(movieInfo[5]))
+        .setDirector(setNullOrString(movieInfo[6]))
+        .setPopularity(setNullOrInt(movieInfo[7]))
+        .setAwards(setNullOrBoolean(movieInfo[8]));
+  }
+
+  private Boolean setNullOrBoolean(String award) {
+    return award.isEmpty() ? null : "Yes".equals(award);
+  }
+
+  private Integer setNullOrInt(String num) {
+    return num.isEmpty() ? null : Integer.parseInt(num);
+  }
+
+  private String setNullOrString(String text) {
+    return text.isEmpty() ? null : text;
+  }
+
+  private static void setBooleanOrNull(PreparedStatement statement, int position, Boolean bool) throws SQLException {
+    if (bool == null) {
       statement.setNull(position, Types.BOOLEAN);
     } else {
-      statement.setBoolean(position, "Yes".equals(bool));
+      statement.setBoolean(position, bool);
     }
   }
 
-  private static void setStatementIntOrNull(PreparedStatement statement, int position, String num) throws SQLException {
-    if (num.isEmpty()) {
+  private static void setStatementIntOrNull(PreparedStatement statement, int position, Integer num) throws SQLException {
+    if (num == null) {
       statement.setNull(position, Types.INTEGER);
     } else {
-      statement.setInt(position, Integer.parseInt(num));
+      statement.setInt(position, num);
     }
   }
 
   private static void setStatementStringOrNull(PreparedStatement statement, int position, String text) throws SQLException {
-    if (text.isEmpty()) {
+    if (text == null) {
       statement.setNull(position, Types.VARCHAR);
     } else {
       statement.setString(position, text);
