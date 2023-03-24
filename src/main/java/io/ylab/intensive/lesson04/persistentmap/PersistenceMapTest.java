@@ -28,7 +28,7 @@ public class PersistenceMapTest {
     System.out.println("Assert: true == " + persistentMap.containsKey("key2"));
 
     System.out.print("get(key2): ");
-    System.out.println("Assert: value2 == " + persistentMap.get("value2"));
+    System.out.println("Assert: value2 == " + persistentMap.get("key2"));
 
     System.out.println("\nPut: (key3, value3)");
     persistentMap.put("key3", "value3");
@@ -41,7 +41,7 @@ public class PersistenceMapTest {
     System.out.print("containsKey(key2)? ");
     System.out.println("Assert: false == " + persistentMap.containsKey("key2"));
 
-    System.out.println("\nclear())");
+    System.out.println("\nclear()");
     persistentMap.clear();
     System.out.print("getKeys: ");
     System.out.println("Assert: [] == " + persistentMap.getKeys());
@@ -49,15 +49,21 @@ public class PersistenceMapTest {
     System.out.println("\nPut: (key4, value4)");
     persistentMap.put("key4", "value4");
     System.out.print("getKeys: ");
-    System.out.println("Assert: [key4]" + persistentMap.getKeys());
+    System.out.println("Assert: [key4] == " + persistentMap.getKeys());
 
     System.out.println("\n\nInit Second");
     persistentMap.init("Second");
     System.out.print("getKeys: ");
     System.out.println("Assert: [] == " + persistentMap.getKeys());
 
+    System.out.println("\nPut: (key5, value5)");
     persistentMap.put("key5", "value5");
+    System.out.print("get(key5): ");
+    System.out.println("Assert: value5 == " + persistentMap.get("key5"));
+    System.out.println("\nPut: (key6, value6)");
     persistentMap.put("key6", "value6");
+    System.out.print("get(key6): ");
+    System.out.println("Assert: value6 == " + persistentMap.get("key6"));
 
     System.out.print("getKeys: ");
     System.out.println("Assert: [key5, key6] == " + persistentMap.getKeys());
