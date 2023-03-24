@@ -5,7 +5,6 @@ import io.ylab.intensive.lesson04.movie.model.Movie;
 
 import javax.sql.DataSource;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.sql.*;
@@ -30,12 +29,17 @@ public class MovieLoaderImpl implements MovieLoader {
 
       checkCorrectFileOrThrow(headerOfFile, typeOfField);
 
-      try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+      try (Connection connection = dataSource.getConnection();
+           PreparedStatement statement = connection.prepareStatement(sql)) {
 
         connection.setAutoCommit(false);
         while (sc.hasNext()) {
-          String movieInfo = sc.nextLine().trim();
-          Movie movie = stringParseToMovie(movieInfo);
+          String movieInfoLine = sc.nextLine().trim();
+
+          Movie movie = stringParseToMovie(movieInfoLine);
+          if (movie == null) {
+            continue;
+          }
 
           setStatementIntOrNull(statement, 1, movie.getYear());
           setStatementIntOrNull(statement, 2, movie.getLength());
@@ -66,19 +70,17 @@ public class MovieLoaderImpl implements MovieLoader {
         throw new RuntimeException(e);
       }
 
-    } catch (FileNotFoundException e) {
+    } catch (InvalidTypeException | IOException e) {
       System.out.println(e.getMessage());
-      throw new RuntimeException(e);
-    } catch (InvalidTypeException e) {
-      System.out.println(e.getMessage());
-    } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
   private Movie stringParseToMovie(String movieInfoString) {
     String[] movieInfo = movieInfoString.split(";");
-
+    if (movieInfo.length < 9) {
+      return null;
+    }
     return new Movie()
         .setYear(setNullOrInt(movieInfo[0]))
         .setLength(setNullOrInt(movieInfo[1]))
