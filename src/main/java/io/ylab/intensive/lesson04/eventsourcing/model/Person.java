@@ -5,15 +5,16 @@ public class Person {
   private String name;
   private String lastName;
   private String middleName;
-
-  public Person() {
-  }
-
+  
   public Person(Long id, String name, String lastName, String middleName) {
     this.id = id;
     this.name = name;
     this.lastName = lastName;
     this.middleName = middleName;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public Long getId() {

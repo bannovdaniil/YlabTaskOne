@@ -43,14 +43,18 @@ public class PersonRepositoryImpl implements PersonRepository {
       update(person);
       return;
     }
+    if (person.getId() == null) {
+      person.setId(getNextId());
+    }
     LOGGER.info("Save: {}", person);
-    final String sql = "INSERT INTO person (first_name, last_name, middle_name) VALUES(?, ?, ?);";
+    final String sql = "INSERT INTO person (person_id, first_name, last_name, middle_name) VALUES(?, ?, ?, ?);";
 
     try (Connection connection = dataSource.getConnection();
          PreparedStatement statement = connection.prepareStatement(sql)) {
-      statement.setString(1, person.getName());
-      statement.setString(2, person.getLastName());
-      statement.setString(3, person.getMiddleName());
+      statement.setLong(1, person.getId());
+      statement.setString(2, person.getName());
+      statement.setString(3, person.getLastName());
+      statement.setString(4, person.getMiddleName());
       statement.executeUpdate();
     } catch (SQLException e) {
       LOGGER.error(e.getMessage());
@@ -62,6 +66,7 @@ public class PersonRepositoryImpl implements PersonRepository {
   public boolean exists(Long personId) {
     LOGGER.info("Call exists({})", personId);
     if (personId == null) {
+      LOGGER.info("Person ID={} not found", personId);
       return false;
     }
     final String sql = "SELECT EXISTS(SELECT 1 FROM person WHERE person_id = ? LIMIT 1);";
@@ -163,4 +168,24 @@ public class PersonRepositoryImpl implements PersonRepository {
     return personList;
   }
 
+  public Long getNextId() {
+    LOGGER.info("getNextId.");
+    final String sql = "SELECT MAX(person_id) as max_id FROM person;";
+
+    long maxId = 0L;
+
+    try (Connection connection = dataSource.getConnection();
+         Statement statement = connection.createStatement()) {
+
+      ResultSet resultSet = statement.executeQuery(sql);
+      if (resultSet.next()) {
+        maxId = resultSet.getLong("max_id");
+      }
+      LOGGER.info("Last ID = {}", maxId);
+    } catch (SQLException e) {
+      LOGGER.error(e.getMessage());
+      throw new RuntimeException(e);
+    }
+    return (maxId + 1L);
+  }
 }

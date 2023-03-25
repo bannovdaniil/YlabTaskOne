@@ -34,21 +34,26 @@ public class ApiApp {
     System.out.println(personApi.findPerson(2L));
 
     System.out.println("Delete even and Edit Odd.");
+    long lastDeletedId = 0;
     for (Person person : personList) {
       if (person.getId() % 2 == 0) {
         personApi.deletePerson(person.getId());
+        lastDeletedId = person.getId();
       } else {
-        person.setName(person.getName().replace("First", "EditFirst"));
+        person.setName(person.getName().replace("First", "EditName" + person.getId()));
         person.setLastName("Робот" + person.getId());
         person.setMiddleName("Петрович" + person.getId());
         personApi.savePerson(person.getId(), person.getName(), person.getLastName(), person.getMiddleName());
       }
     }
 
-    System.out.println("Wait records in dataBase.");
-    personList = waitPersonList(personApi, 4);
-    System.out.println("Size = " + personList.size());
-    System.out.println("personList = " + personList);
+    System.out.println("Wait for deleted ID = " + lastDeletedId + " from DB.");
+    waitDeletePerson(personApi, lastDeletedId);
+
+    System.out.println("Attempt delete record again:");
+    personApi.deletePerson(lastDeletedId);
+    System.out.println("Find user by ID = " + lastDeletedId);
+    System.out.println(personApi.findPerson(lastDeletedId));
 
     System.out.println("Find user by ID = 2L");
     System.out.println(personApi.findPerson(2L));
@@ -56,6 +61,16 @@ public class ApiApp {
     System.out.println("Find user by ID = 3L");
     System.out.println(personApi.findPerson(3L));
 
+  }
+
+  private static void waitDeletePerson(PersonApi personApi, long personId) throws InterruptedException {
+    while (!Thread.currentThread().isInterrupted()) {
+      Person person = personApi.findPerson(personId);
+      if (person == null) {
+        break;
+      }
+      Thread.sleep(100);
+    }
   }
 
   private static List<Person> waitPersonList(PersonApi personApi, int size) throws InterruptedException {
@@ -75,7 +90,7 @@ public class ApiApp {
   }
 
   private static DataSource initDb() throws SQLException {
-    String ddl = "TRUNCATE TABLE person;"
+    String ddl = "DROP TABLE IF EXISTS person;\n"
         + "CREATE TABLE IF NOT EXISTS person (\n"
         + "person_id BIGINT PRIMARY KEY,\n"
         + "first_name VARCHAR,\n"

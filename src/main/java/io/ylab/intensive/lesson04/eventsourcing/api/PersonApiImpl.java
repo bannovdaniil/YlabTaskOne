@@ -19,9 +19,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-/**
- * Тут пишем реализацию
- */
 public class PersonApiImpl implements PersonApi {
   private final ConnectionFactory connectionFactory;
   private final PersonRepository personRepository;
