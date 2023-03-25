@@ -1,4 +1,4 @@
-package io.ylab.intensive.lesson04.eventsourcing;
+package io.ylab.intensive.lesson04.eventsourcing.model;
 
 public class Person {
   private Long id;
