@@ -11,82 +11,94 @@ public class PersistenceMapTest {
     PersistentMap persistentMap = new PersistentMapImpl(dataSource);
 
     // Написать код демонстрации работы
-    System.out.println("Init First");
-    persistentMap.init("first");
+    testInit(persistentMap, "first");
 
-    System.out.println("\nPut: (key1, value1)");
-    persistentMap.put("key1", "value1");
-    System.out.print("get(key1): ");
-    System.out.println("Assert: value1 == " + persistentMap.get("key1"));
+    testPutAndGet(persistentMap, "key1", "value1");
+    testPutAndGet(persistentMap, "key1", "newValue1");
 
-    System.out.print("containsKey(key2)? ");
-    System.out.println("Assert: false == " + persistentMap.containsKey("key2"));
-    System.out.println("\nPut: (key2, value2)");
-    persistentMap.put("key2", "value2");
+    testContainsKey(persistentMap, "key2", false);
+    testPutAndGet(persistentMap, "key2", "value2");
+    testContainsKey(persistentMap, "key2", true);
 
-    System.out.print("containsKey(key2)? ");
-    System.out.println("Assert: true == " + persistentMap.containsKey("key2"));
+    testPutAndGet(persistentMap, "key3", "value3");
+    testGetKeys(persistentMap, "[key1, key2, key3]");
 
-    System.out.print("get(key2): ");
-    System.out.println("Assert: value2 == " + persistentMap.get("key2"));
-
-    System.out.println("\nPut: (key3, value3)");
-    persistentMap.put("key3", "value3");
-    System.out.print("getKeys: ");
-    System.out.println("Assert: [key1, key2, key3] == " + persistentMap.getKeys());
-
-
-    System.out.println("\nRemove(key2)");
-    persistentMap.remove("key2");
-    System.out.print("containsKey(key2)? ");
-    System.out.println("Assert: false == " + persistentMap.containsKey("key2"));
+    testRemove(persistentMap, "key2");
+    testGetKeys(persistentMap, "[key1, key3]");
 
     System.out.println("\nclear()");
     persistentMap.clear();
-    System.out.print("getKeys: ");
-    System.out.println("Assert: [] == " + persistentMap.getKeys());
+    testGetKeys(persistentMap, "[]");
 
-    System.out.println("\nPut: (key4, value4)");
-    persistentMap.put("key4", "value4");
-    System.out.print("getKeys: ");
-    System.out.println("Assert: [key4] == " + persistentMap.getKeys());
+    testPutAndGet(persistentMap, "key4", "value4");
+    testGetKeys(persistentMap, "[key4]");
 
-    System.out.println("\n\nInit Second");
-    persistentMap.init("Second");
-    System.out.print("getKeys: ");
-    System.out.println("Assert: [] == " + persistentMap.getKeys());
+    testInit(persistentMap, "second");
+    testGetKeys(persistentMap, "[]");
 
-    System.out.println("\nPut: (key5, value5)");
-    persistentMap.put("key5", "value5");
-    System.out.print("get(key5): ");
-    System.out.println("Assert: value5 == " + persistentMap.get("key5"));
-    System.out.println("\nPut: (key6, value6)");
-    persistentMap.put("key6", "value6");
-    System.out.print("get(key6): ");
-    System.out.println("Assert: value6 == " + persistentMap.get("key6"));
+    testPutAndGet(persistentMap, "key5", "value5");
+    testPutAndGet(persistentMap, "key6", "value6");
+    testGetKeys(persistentMap, "[key5, key6]");
 
-    System.out.print("getKeys: ");
-    System.out.println("Assert: [key5, key6] == " + persistentMap.getKeys());
-
-    System.out.println("\n\nInit First");
-    persistentMap.init("first");
-
-    System.out.print("getKeys: ");
-    System.out.println("Assert: [key4] == " + persistentMap.getKeys());
+    testInit(persistentMap, "first");
+    testGetKeys(persistentMap, "[key4]");
 
     System.out.print("get(null): ");
     System.out.println("Assert: null == " + persistentMap.get(null));
 
-    System.out.println("\nPut(null, testNull): ");
-    persistentMap.put(null, "testNull");
-    System.out.print("get(null): ");
-    System.out.println("Assert: testNull == " + persistentMap.get(null));
+    testPutAndGet(persistentMap, null, "testNull");
+    testPutAndGet(persistentMap, "keyOk", null);
+    testGetKeys(persistentMap, "[key4, null, keyOk]");
 
-    System.out.println("\nPut(keyOk, null): ");
-    persistentMap.put("keyOk", null);
-    System.out.print("get(keyOk): ");
-    System.out.println("Assert: null == " + persistentMap.get("keyOk"));
+    testRemove(persistentMap, null);
+    testGetKeys(persistentMap, "[key4, keyOk]");
+  }
 
+  private static void testRemove(PersistentMap persistentMap, String key) throws SQLException {
+    System.out.print("\nremove(" + key + "): ");
+    String expect = persistentMap.get(key);
+    persistentMap.remove(key);
+
+    testContainsKey(persistentMap, key, false);
+
+    System.out.print("get(" + key + "): ");
+    System.out.println("> null == " + persistentMap.get(key));
+    if (expect != null && expect.equals(persistentMap.get(key))) {
+      throw new AssertionError("Remove don't work");
+    }
+  }
+
+  private static void testGetKeys(PersistentMap persistentMap, String expect) throws SQLException {
+    System.out.print("\ngetKeys: ");
+    System.out.println("> " + expect + " == " + persistentMap.getKeys());
+    if (!expect.equals(persistentMap.getKeys().toString())) {
+      throw new AssertionError("GetKeys don't work");
+    }
+  }
+
+  private static void testContainsKey(PersistentMap persistentMap, String key, boolean expect) throws SQLException {
+    System.out.print("\ncontainsKey(" + key + ")? ");
+    System.out.println("> " + expect + " == " + persistentMap.containsKey(key));
+    if (expect != persistentMap.containsKey(key)) {
+      throw new AssertionError("ContainsKey don't work");
+    }
+  }
+
+  private static void testPutAndGet(PersistentMap persistentMap, String key, String value) throws SQLException {
+    System.out.println("\nPut: (" + key + ", " + value + ")");
+    persistentMap.put(key, value);
+    System.out.print("get(" + key + "): ");
+    System.out.println("> " + value + " == " + persistentMap.get(key));
+    if (value != null && !value.equals(persistentMap.get(key))) {
+      throw new AssertionError("Put or Get don't work");
+    } else if (value == null && persistentMap.get(key) != null) {
+      throw new AssertionError("Put or Get don't work with null.");
+    }
+  }
+
+  private static void testInit(PersistentMap persistentMap, String name) {
+    System.out.println("\n\nInit: " + name);
+    persistentMap.init(name);
   }
 
   public static DataSource initDb() throws SQLException {

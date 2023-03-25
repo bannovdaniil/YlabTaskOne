@@ -21,7 +21,26 @@ public class PersistentMapImpl implements PersistentMap {
 
   @Override
   public boolean containsKey(String key) throws SQLException {
-    return get(key) != null;
+    boolean value = false;
+    String sql = "SELECT EXISTS(SELECT 1 FROM persistent_map WHERE map_name = ? AND key = ? LIMIT 1);";
+    if (key == null) {
+      sql = "SELECT  EXISTS(SELECT 1 FROM persistent_map WHERE map_name = ? AND key IS NULL LIMIT 1);";
+    }
+
+    try (Connection connection = dataSource.getConnection();
+         PreparedStatement statement = connection.prepareStatement(sql)) {
+
+      setStatementStringOrNull(statement, 1, this.name);
+      if (key != null) {
+        statement.setString(2, key);
+      }
+
+      ResultSet resultSet = statement.executeQuery();
+      if (resultSet.next()) {
+        value = resultSet.getBoolean(1);
+      }
+    }
+    return value;
   }
 
   @Override
@@ -87,6 +106,9 @@ public class PersistentMapImpl implements PersistentMap {
 
   @Override
   public void put(String key, String value) throws SQLException {
+    if (containsKey(key)) {
+      remove(key);
+    }
     final String sql = "INSERT INTO persistent_map (map_name, key, value) VALUES (?, ?, ?);";
 
     try (Connection connection = dataSource.getConnection();
