@@ -7,61 +7,38 @@ import java.io.PrintWriter;
 import java.sql.*;
 import java.util.Scanner;
 
-public class FileSortImpl implements FileSorter {
+public class FileSortImplSerial implements FileSorter {
   private final DataSource dataSource;
-  private final static int BATCH_BLOCK_SIZE = 1_000;
 
-  public FileSortImpl(DataSource dataSource) {
+  public FileSortImplSerial(DataSource dataSource) {
     this.dataSource = dataSource;
   }
 
-
   @Override
   public File sort(File data) {
-    File outFile = new File("data_out.txt");
-    batchAppendData(data);
+    File outFile = new File("data_out_serial.txt");
+    serialAppendData(data);
     sortAndSave(outFile);
 
     return outFile;
   }
 
-  private void batchAppendData(File file) {
+  private void serialAppendData(File file) {
     final String sql = "INSERT INTO numbers VALUES (?)";
 
     try (Scanner sc = new Scanner(file);
          Connection connection = dataSource.getConnection();
          PreparedStatement statement = connection.prepareStatement(sql)) {
-
-      connection.setAutoCommit(false);
-      int count = 0;
-
+      connection.setAutoCommit(true);
       while (sc.hasNext()) {
         long num = sc.nextLong();
+
         statement.setLong(1, num);
-        statement.addBatch();
-        if (count++ >= BATCH_BLOCK_SIZE) {
-          saveBath(connection, statement);
-          count = 0;
-        }
+        statement.executeUpdate();
       }
 
-      if (count > 0) {
-        saveBath(connection, statement);
-      }
-
-      connection.setAutoCommit(true);
     } catch (FileNotFoundException | SQLException e) {
       throw new RuntimeException(e);
-    }
-  }
-
-  private static void saveBath(Connection connection, PreparedStatement statement) throws SQLException {
-    try {
-      statement.executeBatch();
-      connection.commit();
-    } catch (BatchUpdateException e) {
-      System.out.println(e.getMessage());
-      connection.rollback();
     }
   }
 
