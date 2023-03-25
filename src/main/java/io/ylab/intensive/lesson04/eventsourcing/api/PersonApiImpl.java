@@ -8,6 +8,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import io.ylab.intensive.lesson04.eventsourcing.Constants;
 import io.ylab.intensive.lesson04.eventsourcing.dao.PersonRepository;
+import io.ylab.intensive.lesson04.eventsourcing.model.Command;
 import io.ylab.intensive.lesson04.eventsourcing.model.Message;
 import io.ylab.intensive.lesson04.eventsourcing.model.Person;
 import org.slf4j.Logger;
@@ -38,7 +39,7 @@ public class PersonApiImpl implements PersonApi {
     try (Connection connection = connectionFactory.newConnection();
          Channel channel = connection.createChannel()) {
 
-      String jsonMessage = getJson("DELETE", personId, null);
+      String jsonMessage = getJson(Command.DELETE, personId, null);
 
       sendMessageToConsumer(channel, jsonMessage);
     } catch (IOException | TimeoutException e) {
@@ -53,7 +54,7 @@ public class PersonApiImpl implements PersonApi {
          Channel channel = connection.createChannel()) {
 
       Person person = new Person(personId, firstName, lastName, middleName);
-      String jsonMessage = getJson("SAVE", personId, person);
+      String jsonMessage = getJson(Command.SAVE, personId, person);
 
       sendMessageToConsumer(channel, jsonMessage);
     } catch (IOException | TimeoutException e) {
@@ -83,7 +84,7 @@ public class PersonApiImpl implements PersonApi {
     LOGGER.info("[v] Send: {}: {}", Constants.ROUTING_KEY, jsonMessage);
   }
 
-  private String getJson(String command, Long personId, Person person) throws JsonProcessingException {
+  private String getJson(Command command, Long personId, Person person) throws JsonProcessingException {
     return objectMapper.writeValueAsString(new Message(command, personId, person));
   }
 }

@@ -19,12 +19,18 @@ public class PersonRepositoryImpl implements PersonRepository {
 
   @Override
   public void delete(Long personId) {
-    final String sql = "DELETE FROM FROM person WHERE person_id = ?;";
+    LOGGER.info("delete({})", personId);
+    if (!exists(personId)) {
+      LOGGER.info("Person id={} not found.", personId);
+      return;
+    }
+    final String sql = "DELETE FROM person WHERE person_id = ?;";
 
     try (Connection connection = dataSource.getConnection();
          PreparedStatement statement = connection.prepareStatement(sql)) {
       statement.setLong(1, personId);
-      statement.execute(sql);
+      int rowsAffected = statement.executeUpdate();
+      LOGGER.info("delete: {} records.", rowsAffected);
     } catch (SQLException e) {
       LOGGER.error(e.getMessage());
       throw new RuntimeException(e);
@@ -33,6 +39,11 @@ public class PersonRepositoryImpl implements PersonRepository {
 
   @Override
   public void save(Person person) {
+    if (person.getId() != null && exists(person.getId())) {
+      update(person);
+      return;
+    }
+    LOGGER.info("Save: {}", person);
     final String sql = "INSERT INTO person (first_name, last_name, middle_name) VALUES(?, ?, ?);";
 
     try (Connection connection = dataSource.getConnection();
@@ -40,7 +51,7 @@ public class PersonRepositoryImpl implements PersonRepository {
       statement.setString(1, person.getName());
       statement.setString(2, person.getLastName());
       statement.setString(3, person.getMiddleName());
-      statement.execute(sql);
+      statement.executeUpdate();
     } catch (SQLException e) {
       LOGGER.error(e.getMessage());
       throw new RuntimeException(e);
@@ -49,6 +60,10 @@ public class PersonRepositoryImpl implements PersonRepository {
 
   @Override
   public boolean exists(Long personId) {
+    LOGGER.info("Call exists({})", personId);
+    if (personId == null) {
+      return false;
+    }
     final String sql = "SELECT EXISTS(SELECT 1 FROM person WHERE person_id = ? LIMIT 1);";
     boolean exists = false;
 
@@ -60,6 +75,7 @@ public class PersonRepositoryImpl implements PersonRepository {
       if (resultSet.next()) {
         exists = resultSet.getBoolean(1);
       }
+      LOGGER.info("Person id = {} exists = {}.", personId, exists);
     } catch (SQLException e) {
       LOGGER.error(e.getMessage());
       throw new RuntimeException(e);
@@ -69,6 +85,11 @@ public class PersonRepositoryImpl implements PersonRepository {
 
   @Override
   public void update(Person person) {
+    LOGGER.info("Update: {}", person);
+    if (person.getId() == null) {
+      save(person);
+      return;
+    }
     final String sql = "UPDATE person SET first_name = ?, last_name = ?, middle_name = ? WHERE person_id = ?;";
 
     try (Connection connection = dataSource.getConnection();
@@ -79,7 +100,7 @@ public class PersonRepositoryImpl implements PersonRepository {
       statement.setString(3, person.getMiddleName());
       statement.setLong(4, person.getId());
 
-      statement.executeUpdate(sql);
+      statement.executeUpdate();
     } catch (SQLException e) {
       LOGGER.error(e.getMessage());
       throw new RuntimeException(e);
@@ -88,6 +109,7 @@ public class PersonRepositoryImpl implements PersonRepository {
 
   @Override
   public Person findById(Long personId) {
+    LOGGER.info("findById({}))", personId);
     final String sql = "SELECT person_id, first_name, last_name, middle_name"
         + " FROM person WHERE person_id = ?;";
 
@@ -104,7 +126,7 @@ public class PersonRepositoryImpl implements PersonRepository {
             resultSet.getLong("person_id"),
             resultSet.getString("first_name"),
             resultSet.getString("last_name"),
-            resultSet.getString("middleName")
+            resultSet.getString("middle_name")
         );
       }
     } catch (SQLException e) {
@@ -116,6 +138,7 @@ public class PersonRepositoryImpl implements PersonRepository {
 
   @Override
   public List<Person> findAll() {
+    LOGGER.info("FindAll");
     final String sql = "SELECT person_id, first_name, last_name, middle_name FROM person;";
     List<Person> personList = new ArrayList<>();
 
@@ -128,7 +151,7 @@ public class PersonRepositoryImpl implements PersonRepository {
                 resultSet.getLong("person_id"),
                 resultSet.getString("first_name"),
                 resultSet.getString("last_name"),
-                resultSet.getString("middleName")
+                resultSet.getString("middle_name")
             )
         );
       }

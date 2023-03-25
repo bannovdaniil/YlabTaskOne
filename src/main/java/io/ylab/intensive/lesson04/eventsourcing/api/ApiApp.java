@@ -9,6 +9,7 @@ import io.ylab.intensive.lesson04.eventsourcing.model.Person;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ApiApp {
@@ -19,12 +20,54 @@ public class ApiApp {
 
     PersonApi personApi = new PersonApiImpl(connectionFactory, personRepository);
 
-    personApi.deletePerson(1L);
-    personApi.savePerson(1L, "First", "Last", "Middle");
-    Person person = personApi.findPerson(1L);
-    List<Person> personList = personApi.findAll();
-    System.out.println(person);
-    System.out.println(personList);
+    System.out.println("Send to broker 7 persons.");
+    for (long i = 1L; i <= 7L; i++) {
+      personApi.savePerson(i, "First" + i, "Last" + i, "Middle" + i);
+    }
+
+    System.out.println("Wait records in dataBase.");
+    List<Person> personList = waitPersonList(personApi, 7);
+    System.out.println("Size = " + personList.size());
+    System.out.println("personList = " + personList);
+
+    System.out.println("Find user by ID = 2L");
+    System.out.println(personApi.findPerson(2L));
+
+    System.out.println("Delete even and Edit Odd.");
+    for (Person person : personList) {
+      if (person.getId() % 2 == 0) {
+        personApi.deletePerson(person.getId());
+      } else {
+        person.setName(person.getName().replace("First", "EditFirst"));
+        person.setLastName("Робот" + person.getId());
+        person.setMiddleName("Петрович" + person.getId());
+        personApi.savePerson(person.getId(), person.getName(), person.getLastName(), person.getMiddleName());
+      }
+    }
+
+    System.out.println("Wait records in dataBase.");
+    personList = waitPersonList(personApi, 4);
+    System.out.println("Size = " + personList.size());
+    System.out.println("personList = " + personList);
+
+    System.out.println("Find user by ID = 2L");
+    System.out.println(personApi.findPerson(2L));
+
+    System.out.println("Find user by ID = 3L");
+    System.out.println(personApi.findPerson(3L));
+
+  }
+
+  private static List<Person> waitPersonList(PersonApi personApi, int size) throws InterruptedException {
+    List<Person> personList = new ArrayList<>();
+    while (!Thread.currentThread().isInterrupted()) {
+      personList = personApi.findAll();
+      if (personList.size() >= size) {
+        break;
+      }
+      Thread.sleep(100);
+    }
+    return personList;
   }
 
   private static ConnectionFactory initMQ() throws Exception {
@@ -32,7 +75,7 @@ public class ApiApp {
   }
 
   private static DataSource initDb() throws SQLException {
-    String ddl = ""
+    String ddl = "TRUNCATE TABLE person;"
         + "CREATE TABLE IF NOT EXISTS person (\n"
         + "person_id BIGINT PRIMARY KEY,\n"
         + "first_name VARCHAR,\n"
