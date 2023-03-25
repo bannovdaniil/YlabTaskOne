@@ -11,6 +11,7 @@ public class DbApp {
   public static void main(String[] args) throws Exception {
     DataSource dataSource = initDb();
     ConnectionFactory connectionFactory = initMQ();
+    PersonRepository personRepository = new PersonRepository(dataSource);
 
     // тут пишем создание и запуск приложения работы с БД
   }

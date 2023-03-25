@@ -8,6 +8,7 @@ import java.util.List;
  * Тут пишем реализацию
  */
 public class PersonApiImpl implements PersonApi {
+
   @Override
   public void deletePerson(Long personId) {
 
