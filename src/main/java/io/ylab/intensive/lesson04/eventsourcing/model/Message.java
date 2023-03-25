@@ -29,5 +29,4 @@ public class Message {
   public Person getPerson() {
     return person;
   }
-
 }
