@@ -2,6 +2,8 @@ package io.ylab.intensive.lesson04.movie;
 
 import com.sun.jdi.InvalidTypeException;
 import io.ylab.intensive.lesson04.movie.model.Movie;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.io.File;
@@ -12,6 +14,7 @@ import java.util.Scanner;
 
 public class MovieLoaderImpl implements MovieLoader {
   private final DataSource dataSource;
+  private final Logger LOGGER = LoggerFactory.getLogger(MovieLoaderImpl.class);
 
   public MovieLoaderImpl(DataSource dataSource) {
     this.dataSource = dataSource;
@@ -23,6 +26,7 @@ public class MovieLoaderImpl implements MovieLoader {
         + " (year, length, title, subject, actors, actress, director, popularity, awards) "
         + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
+    LOGGER.info("Start load data");
     try (Scanner sc = new Scanner(file, Charset.forName("windows-1252"))) {
       String headerOfFile = sc.hasNext() ? sc.nextLine() : null;
       String typeOfField = sc.hasNext() ? sc.nextLine() : null;
@@ -65,6 +69,7 @@ public class MovieLoaderImpl implements MovieLoader {
         }
 
         connection.setAutoCommit(true);
+        LOGGER.info("Data load - OK");
       } catch (SQLException e) {
         System.out.println(e.getMessage());
         throw new RuntimeException(e);
@@ -131,9 +136,9 @@ public class MovieLoaderImpl implements MovieLoader {
 
   private void checkCorrectFileOrThrow(String headerOfFile, String typeOfField) throws InvalidTypeException {
     if (headerOfFile == null
-        && typeOfField == null
-        && !headerOfFile.startsWith("Year;Length;Title;Subject;Actor;Actress;Director;Popularity;Awards")
-        && !typeOfField.startsWith("INT;INT;STRING;CAT;CAT;CAT;CAT;INT;BOOL")
+        || typeOfField == null
+        || (!headerOfFile.startsWith("Year;Length;Title;Subject;Actor;Actress;Director;Popularity;Awards")
+        && !typeOfField.startsWith("INT;INT;STRING;CAT;CAT;CAT;CAT;INT;BOOL"))
     ) {
       throw new InvalidTypeException("Неверный тип файла или переданный файл не содержит необходимые поля.");
     }
