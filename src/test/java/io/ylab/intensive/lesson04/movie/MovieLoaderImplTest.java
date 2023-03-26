@@ -23,6 +23,7 @@ class MovieLoaderImplTest {
   @BeforeEach
   void setUp() throws IOException {
     testFile = File.createTempFile("test-", ".txt");
+    testFile.deleteOnExit();
   }
 
   @AfterEach
