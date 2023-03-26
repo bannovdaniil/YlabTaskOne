@@ -66,19 +66,19 @@ public class MovieLoaderImpl implements MovieLoader {
           statement.executeBatch();
           connection.commit();
         } catch (BatchUpdateException e) {
-          System.out.println(e.getMessage());
+          LOGGER.error(e.getMessage());
           connection.rollback();
         }
 
         connection.setAutoCommit(true);
         LOGGER.info("Data load ({} records) - OK", count);
       } catch (SQLException e) {
-        System.out.println(e.getMessage());
+        LOGGER.error(e.getMessage());
         throw new RuntimeException(e);
       }
 
     } catch (InvalidTypeException | IOException e) {
-      System.out.println(e.getMessage());
+      LOGGER.error(e.getMessage());
       throw new RuntimeException(e);
     }
   }
