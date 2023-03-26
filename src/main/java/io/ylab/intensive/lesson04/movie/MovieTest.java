@@ -1,17 +1,25 @@
 package io.ylab.intensive.lesson04.movie;
 
 import io.ylab.intensive.lesson04.DbUtil;
+import io.ylab.intensive.lesson04.movie.util.HttpsDownloader;
 
 import javax.sql.DataSource;
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class MovieTest {
-  public static void main(String[] args) throws SQLException {
+  private final static String URL = "https://perso.telecom-paristech.fr/eagan/class/igr204/data/film.csv";
+
+  public static void main(String[] args) throws SQLException, IOException {
     DataSource dataSource = initDb();
     MovieLoader movieLoader = new MovieLoaderImpl(dataSource);
 
     File dataFile = new File("movies.csv");
+
+    if (!dataFile.exists()) {
+      new HttpsDownloader().downloadFile(URL, dataFile, "windows-1252");
+    }
     movieLoader.loadData(dataFile);
 
     /**
