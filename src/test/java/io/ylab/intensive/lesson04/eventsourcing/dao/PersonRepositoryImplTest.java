@@ -2,21 +2,26 @@ package io.ylab.intensive.lesson04.eventsourcing.dao;
 
 import io.ylab.intensive.lesson04.DbUtil;
 import io.ylab.intensive.lesson04.eventsourcing.model.Person;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.sql.SQLException;
 import java.util.List;
 
 class PersonRepositoryImplTest {
-
   private Person person1;
   private Person person2;
   private Person person7;
   private Person personNull;
+
   private PersonRepositoryImpl personRepository;
+  private PrintStream systemErr;
+  private ByteArrayOutputStream testErr;
 
   @BeforeEach
   void setUp() throws SQLException {
@@ -37,6 +42,15 @@ class PersonRepositoryImplTest {
     DbUtil.applyDdl(ddl, dataSource);
 
     personRepository = new PersonRepositoryImpl(dataSource);
+
+    systemErr = System.err;
+    testErr = new ByteArrayOutputStream();
+    System.setErr(new PrintStream(testErr));
+  }
+
+  @AfterEach
+  void tearDown() {
+    System.setErr(systemErr);
   }
 
   @Test
@@ -44,6 +58,11 @@ class PersonRepositoryImplTest {
     long expect = 1L;
 
     personRepository.delete(1L);
+
+    String logMessages = testErr.toString();
+    System.setErr(systemErr);
+    System.err.print(logMessages);
+    Assertions.assertTrue(logMessages.contains("Person id=1 not found."));
 
     personRepository.save(person1);
     Person resultPerson = personRepository.findById(1L);

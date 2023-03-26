@@ -11,7 +11,7 @@ import java.util.List;
 
 public class PersonRepositoryImpl implements PersonRepository {
   private final DataSource dataSource;
-  private final static Logger LOGGER = LoggerFactory.getLogger(PersonRepository.class);
+  private final static Logger LOGGER = LoggerFactory.getLogger(PersonRepositoryImpl.class);
 
   public PersonRepositoryImpl(DataSource dataSource) {
     this.dataSource = dataSource;
@@ -22,6 +22,7 @@ public class PersonRepositoryImpl implements PersonRepository {
     LOGGER.info("delete({})", personId);
     if (!exists(personId)) {
       LOGGER.info("Person id={} not found.", personId);
+
       return;
     }
     final String sql = "DELETE FROM person WHERE person_id = ?;";
