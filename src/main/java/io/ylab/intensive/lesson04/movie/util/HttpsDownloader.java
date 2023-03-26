@@ -25,15 +25,17 @@ public class HttpsDownloader {
     ) {
       char[] buffer = new char[4096];
       int count = 1;
+      long size = 0L;
       while (count > 0) {
         count = in.read(buffer);
         if (count > 0) {
           pw.write(buffer, 0, count);
+          size += count;
         }
       }
 
       pw.flush();
-      LOGGER.info("Download - OK");
+      LOGGER.info("Download ({} chars) - OK", size);
     }
   }
 

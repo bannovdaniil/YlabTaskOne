@@ -36,9 +36,11 @@ public class MovieLoaderImpl implements MovieLoader {
       try (Connection connection = dataSource.getConnection();
            PreparedStatement statement = connection.prepareStatement(sql)) {
 
+        long count = 0L;
         connection.setAutoCommit(false);
         while (sc.hasNext()) {
           String movieInfoLine = sc.nextLine().trim();
+          count++;
 
           Movie movie = stringParseToMovie(movieInfoLine);
           if (movie == null) {
@@ -69,7 +71,7 @@ public class MovieLoaderImpl implements MovieLoader {
         }
 
         connection.setAutoCommit(true);
-        LOGGER.info("Data load - OK");
+        LOGGER.info("Data load ({} records) - OK", count);
       } catch (SQLException e) {
         System.out.println(e.getMessage());
         throw new RuntimeException(e);
