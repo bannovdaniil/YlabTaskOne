@@ -5,14 +5,11 @@ import io.ylab.intensive.lesson04.eventsourcing.model.Person;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.List;
 
-@ExtendWith(MockitoExtension.class)
 class PersonRepositoryImplTest {
 
   private Person person1;
