@@ -21,12 +21,12 @@ public class ValidatorWithSizeAndHash {
 
   public boolean isSorted() {
     try (Scanner scanner = new Scanner(new FileInputStream(file))) {
-      long prev = Long.MIN_VALUE;
+      long prev = Long.MAX_VALUE;
       while (scanner.hasNextLong()) {
         long current = scanner.nextLong();
         hashCode ^= current;
         size--;
-        if (current < prev) {
+        if (current > prev) {
           return false;
         } else {
           prev = current;

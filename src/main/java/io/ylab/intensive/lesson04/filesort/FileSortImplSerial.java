@@ -43,7 +43,7 @@ public class FileSortImplSerial implements FileSorter {
   }
 
   private void sortAndSave(File file) {
-    final String sqlSort = "SELECT val FROM numbers ORDER BY val;";
+    final String sqlSort = "SELECT val FROM numbers ORDER BY val DESC;";
 
     try (PrintWriter pw = new PrintWriter(file);
          Connection connection = dataSource.getConnection();

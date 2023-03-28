@@ -66,7 +66,7 @@ class FileSortImplTest {
     );
 
     List<Long> expect = new ArrayList<>(content);
-    Collections.sort(expect);
+    expect.sort(Collections.reverseOrder());
 
 
     try (PrintWriter pw = new PrintWriter(testFile)) {
