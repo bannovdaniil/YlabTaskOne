@@ -30,3 +30,17 @@ https://university.ylab.io/
 - 3.Org Structure
 - 4.PasswordValidator
 - 5.FileSort, создал дополнительную проверку по хешкоду и размеру.
+
+**2023-03-25**
+
+- Movie Database (io.ylab.intensive.lesson04.movie)
+
+**2023-03-26**
+
+- Movie Database (io.ylab.intensive.lesson04.movie)
+- Persistent Map
+- FileSort Returns!
+
+**2023-03-27**
+
+- Event Sourcing
