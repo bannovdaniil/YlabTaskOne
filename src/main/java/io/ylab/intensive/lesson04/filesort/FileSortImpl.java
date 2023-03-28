@@ -70,8 +70,8 @@ public class FileSortImpl implements FileSorter {
 
     try (PrintWriter pw = new PrintWriter(file);
          Connection connection = dataSource.getConnection();
-         Statement statement = connection.createStatement()) {
-      ResultSet resultSet = statement.executeQuery(sqlSort);
+         Statement statement = connection.createStatement();
+         ResultSet resultSet = statement.executeQuery(sqlSort)) {
       while (resultSet.next()) {
         pw.println(resultSet.getLong("val"));
       }

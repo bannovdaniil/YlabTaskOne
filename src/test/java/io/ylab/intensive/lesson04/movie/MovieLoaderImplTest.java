@@ -89,9 +89,9 @@ class MovieLoaderImplTest {
 
     int result = 0;
     try (Connection connection = dataSource.getConnection();
-         Statement statement = connection.createStatement()
-    ) {
-      ResultSet resultSet = statement.executeQuery(sql);
+         Statement statement = connection.createStatement();
+         ResultSet resultSet = statement.executeQuery(sql)) {
+
       if (resultSet.next()) {
         result = resultSet.getInt("count");
       }

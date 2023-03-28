@@ -77,9 +77,10 @@ public class PersonRepositoryImpl implements PersonRepository {
          PreparedStatement statement = connection.prepareStatement(sql)) {
 
       statement.setLong(1, personId);
-      ResultSet resultSet = statement.executeQuery();
-      if (resultSet.next()) {
-        exists = resultSet.getBoolean(1);
+      try (ResultSet resultSet = statement.executeQuery()) {
+        if (resultSet.next()) {
+          exists = resultSet.getBoolean(1);
+        }
       }
       LOGGER.info("Person id = {} exists = {}.", personId, exists);
     } catch (SQLException e) {
@@ -126,14 +127,15 @@ public class PersonRepositoryImpl implements PersonRepository {
 
       statement.setLong(1, personId);
 
-      ResultSet resultSet = statement.executeQuery();
-      if (resultSet.next()) {
-        person = new Person(
-            resultSet.getLong("person_id"),
-            resultSet.getString("first_name"),
-            resultSet.getString("last_name"),
-            resultSet.getString("middle_name")
-        );
+      try (ResultSet resultSet = statement.executeQuery()) {
+        if (resultSet.next()) {
+          person = new Person(
+              resultSet.getLong("person_id"),
+              resultSet.getString("first_name"),
+              resultSet.getString("last_name"),
+              resultSet.getString("middle_name")
+          );
+        }
       }
     } catch (SQLException e) {
       LOGGER.error(e.getMessage());
@@ -150,16 +152,17 @@ public class PersonRepositoryImpl implements PersonRepository {
 
     try (Connection connection = dataSource.getConnection();
          Statement statement = connection.createStatement()) {
-      ResultSet resultSet = statement.executeQuery(sql);
-      while (resultSet.next()) {
-        personList.add(
-            new Person(
-                resultSet.getLong("person_id"),
-                resultSet.getString("first_name"),
-                resultSet.getString("last_name"),
-                resultSet.getString("middle_name")
-            )
-        );
+      try (ResultSet resultSet = statement.executeQuery(sql)) {
+        while (resultSet.next()) {
+          personList.add(
+              new Person(
+                  resultSet.getLong("person_id"),
+                  resultSet.getString("first_name"),
+                  resultSet.getString("last_name"),
+                  resultSet.getString("middle_name")
+              )
+          );
+        }
       }
     } catch (SQLException e) {
       LOGGER.error(e.getMessage());
@@ -176,9 +179,9 @@ public class PersonRepositoryImpl implements PersonRepository {
     long maxId = 0L;
 
     try (Connection connection = dataSource.getConnection();
-         Statement statement = connection.createStatement()) {
+         Statement statement = connection.createStatement();
+         ResultSet resultSet = statement.executeQuery(sql)) {
 
-      ResultSet resultSet = statement.executeQuery(sql);
       if (resultSet.next()) {
         maxId = resultSet.getLong("max_id");
       }
