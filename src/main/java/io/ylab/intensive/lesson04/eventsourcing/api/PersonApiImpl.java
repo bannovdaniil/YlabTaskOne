@@ -71,9 +71,9 @@ public class PersonApiImpl implements PersonApi {
   }
 
   private static void sendMessageToConsumer(Channel channel, String jsonMessage) throws IOException {
-    channel.exchangeDeclare(Constants.EXCHANGER_NAME, BuiltinExchangeType.DIRECT);
-    String queueName = channel.queueDeclare().getQueue();
-    channel.queueBind(queueName, Constants.EXCHANGER_NAME, Constants.ROUTING_KEY);
+    channel.exchangeDeclare(Constants.EXCHANGER_NAME, BuiltinExchangeType.DIRECT, true);
+    channel.queueDeclare(Constants.COMMAND_QUEUE, true, false, false, null);
+    channel.queueBind(Constants.COMMAND_QUEUE, Constants.EXCHANGER_NAME, Constants.ROUTING_KEY);
     channel.basicPublish(Constants.EXCHANGER_NAME,
         Constants.ROUTING_KEY,
         null,

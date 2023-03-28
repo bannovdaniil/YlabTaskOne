@@ -28,12 +28,13 @@ public class DbApp {
     try (Connection connection = connectionFactory.newConnection();
          Channel channel = connection.createChannel()) {
 
-      channel.exchangeDeclare(Constants.EXCHANGER_NAME, BuiltinExchangeType.DIRECT);
-      String queueName = channel.queueDeclare().getQueue();
-      channel.queueBind(queueName, Constants.EXCHANGER_NAME, Constants.ROUTING_KEY);
+      channel.exchangeDeclare(Constants.EXCHANGER_NAME, BuiltinExchangeType.DIRECT, true);
+      channel.queueDeclare(Constants.COMMAND_QUEUE, true, false, false, null);
+
+      channel.queueBind(Constants.COMMAND_QUEUE, Constants.EXCHANGER_NAME, Constants.ROUTING_KEY);
       LOGGER.info(" [*] Waiting for messages");
       while (!Thread.currentThread().isInterrupted()) {
-        GetResponse response = channel.basicGet(queueName, true);
+        GetResponse response = channel.basicGet(Constants.COMMAND_QUEUE, true);
         if (response != null) {
           String messageString = new String(response.getBody(), StandardCharsets.UTF_8);
           LOGGER.info(" [v] Received {}, {}", response.getEnvelope().getRoutingKey(), messageString);

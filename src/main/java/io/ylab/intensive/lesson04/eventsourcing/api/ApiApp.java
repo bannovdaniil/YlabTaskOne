@@ -24,7 +24,6 @@ public class ApiApp {
     for (long i = 1L; i <= 7L; i++) {
       personApi.savePerson(i, "First" + i, "Last" + i, "Middle" + i);
     }
-
     System.out.println("Wait records in dataBase.");
     List<Person> personList = waitPersonList(personApi, 7);
     System.out.println("Size = " + personList.size());
