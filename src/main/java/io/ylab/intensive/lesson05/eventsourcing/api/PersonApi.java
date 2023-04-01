@@ -1,6 +1,6 @@
 package io.ylab.intensive.lesson05.eventsourcing.api;
 
-import io.ylab.intensive.lesson05.eventsourcing.Person;
+import io.ylab.intensive.lesson05.eventsourcing.model.Person;
 
 import java.util.List;
 

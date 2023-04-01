@@ -1,4 +1,4 @@
-package io.ylab.intensive.lesson05.eventsourcing;
+package io.ylab.intensive.lesson05.eventsourcing.model;
 
 public class Person {
   private Long id;
@@ -16,12 +16,12 @@ public class Person {
     this.middleName = middleName;
   }
 
-  public Long getId() {
-    return id;
-  }
-
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public Long getId() {
+    return id;
   }
 
   public String getName() {
@@ -46,5 +46,15 @@ public class Person {
 
   public void setMiddleName(String middleName) {
     this.middleName = middleName;
+  }
+
+  @Override
+  public String toString() {
+    return "Person{" +
+        "id=" + id +
+        ", name='" + name + '\'' +
+        ", lastName='" + lastName + '\'' +
+        ", middleName='" + middleName + '\'' +
+        '}';
   }
 }
