@@ -2,6 +2,7 @@ package io.ylab.intensive.lesson05.messagefilter.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -16,8 +17,10 @@ public class CensoringMessage {
     private final Connection connection;
     private final static Logger LOGGER = LoggerFactory.getLogger(CensoringMessage.class);
     private final StringBuilder wordWithStar = new StringBuilder();
-    private final String splitterChars = "[\\?\\.!,\\s]";
 
+    private final String splitterChars = "[\\?\\.,;!\\s\\n]";
+
+    @Autowired
     public CensoringMessage(DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
         connection = dataSource.getConnection();
@@ -29,17 +32,19 @@ public class CensoringMessage {
         }
         String[] words = message.split(splitterChars);
         StringBuilder sb = new StringBuilder(message);
+        int oldPosition = 0;
         for (var word : words) {
             if (findInDB(word)) {
                 String newWord = replaceWithStars(word);
-                int position = message.indexOf(word);
+                int position = message.indexOf(word, oldPosition);
                 sb.replace(position, position + word.length(), newWord);
             }
+            oldPosition += word.length() + 1;
         }
         return sb.toString();
     }
 
-    private String replaceWithStars(String word) {
+    private synchronized String replaceWithStars(String word) {
         int repeatCount = word.length() - 2;
         wordWithStar.setLength(0);
         wordWithStar.append(word.charAt(0));
@@ -55,7 +60,7 @@ public class CensoringMessage {
         final String sql = "SELECT EXISTS(SELECT 1 FROM bad_words WHERE LOWER(word) = LOWER(?) LIMIT 1);";
         boolean exists = false;
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, word);
+            statement.setString(1, word.toLowerCase());
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     exists = resultSet.getBoolean(1);

@@ -13,8 +13,7 @@ import java.util.concurrent.TimeoutException;
 
 @Component
 public class Messenger {
-    private final ConnectionFactory connectionFactory;
-    //    private final Connection connection;
+    private final Connection connection;
     private final Channel channelIn;
     private final Channel channelOut;
 
@@ -25,9 +24,7 @@ public class Messenger {
 
     @Autowired
     public Messenger(ConnectionFactory connectionFactory) throws IOException, TimeoutException {
-        this.connectionFactory = connectionFactory;
-        Connection connection = connectionFactory.newConnection();
-
+        connection = connectionFactory.newConnection();
         channelIn = connection.createChannel();
         channelIn.exchangeDeclare(EXCHANGER_NAME, BuiltinExchangeType.DIRECT, true);
         channelIn.queueDeclare(IN_QUEUE, true, false, false, null);
@@ -35,6 +32,7 @@ public class Messenger {
         channelOut = connection.createChannel();
         channelOut.exchangeDeclare(EXCHANGER_NAME, BuiltinExchangeType.DIRECT, true);
         channelOut.queueDeclare(OUT_QUEUE, true, false, false, null);
+
     }
 
     public void sendMessage(String message) {
@@ -54,7 +52,7 @@ public class Messenger {
     public void purgeOutputQueue() {
         try {
             channelOut.queuePurge(OUT_QUEUE);
-            LOGGER.info("[v] Purge: {}: {}", OUT_QUEUE);
+            LOGGER.info("[v] Purge: {}", OUT_QUEUE);
         } catch (Exception e) {
             LOGGER.error("Error purge: {}", e.getMessage());
         }
@@ -63,7 +61,7 @@ public class Messenger {
     public void purgeInputQueue() {
         try {
             channelOut.queuePurge(IN_QUEUE);
-            LOGGER.info("[v] Purge: {}: {}", IN_QUEUE);
+            LOGGER.info("[v] Purge: {}", IN_QUEUE);
         } catch (Exception e) {
             LOGGER.error("Error purge: {}", e.getMessage());
         }
@@ -85,7 +83,7 @@ public class Messenger {
 
     public Optional<String> receiveMessage() {
         Optional<String> messageString = Optional.empty();
-        GetResponse response = null;
+        GetResponse response;
         try {
             channelIn.queueBind(IN_QUEUE, EXCHANGER_NAME, IN_QUEUE);
             response = channelIn.basicGet(IN_QUEUE, true);
@@ -104,6 +102,7 @@ public class Messenger {
         try {
             channelIn.close();
             channelOut.close();
+            connection.close();
         } catch (IOException | TimeoutException e) {
             throw new RuntimeException(e);
         }

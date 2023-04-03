@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,7 +17,7 @@ import java.util.Random;
 public class MessageGeneratorApp {
     private final static Random random = new Random();
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(Config.class);
         applicationContext.start();
         DataSource dataSource = applicationContext.getBean(DataSource.class);
@@ -28,14 +27,19 @@ public class MessageGeneratorApp {
         fileLoader.loadFileToDB("bad_words.txt");
         List<String> badWordList = getBadWord(dataSource);
 
-        //    messenger.purgeInputQueue();
-        for (String word : badWordList) {
-            word = randomCase(word);
-            String word2 = randomCase(badWordList.get(random.nextInt(badWordList.size() - 1)));
-            String message = generateMessage(word, word2, 1, 3);
+        messenger.purgeInputQueue();
+        for (int i = 0; i < 30; i++) {
+            String message = generateMessage(badWordList,
+                    random.nextInt(5) + 2,
+                    2,
+                    30);
             System.out.println("message = " + message);
             messenger.prepareMessage(message);
         }
+
+        String message = "eблантий, eблантий, eблантий2, 2eблантий+ eблантий! фывафыва елдак\nелдак\n!eблантий! Eблантий EблаНтий eблантиЙ eблантий";
+        messenger.prepareMessage(message);
+
 
         System.out.println("badWordList = " + badWordList);
         messenger.close();
@@ -53,14 +57,17 @@ public class MessageGeneratorApp {
         return first + word.substring(1, word.length() - 1) + last;
     }
 
-    private static String generateMessage(String word, String word2, int min, int max) {
+    private static String generateMessage(List<String> badWordList, int countBadWord, int minWordInSentence, int maxWordInSentence) {
         StringBuilder randomMessage = new StringBuilder();
-        int size = random.nextInt(min) + (max - min);
+        int size = random.nextInt(minWordInSentence) + (maxWordInSentence - minWordInSentence);
         for (int i = 0; i < size; i++) {
             randomMessage.append(generateWord()).append(" ");
         }
-        int position = insertWord(word, randomMessage, 0) + word.length() + 2;
-        insertWord(word2, randomMessage, position);
+        int position = 0;
+        for (int i = 0; i < countBadWord; i++) {
+            String word = randomCase(badWordList.get(random.nextInt(badWordList.size() - 1)));
+            position = insertWord(word, randomMessage, position) + word.length() + 2;
+        }
 
         return randomMessage.toString().trim();
     }

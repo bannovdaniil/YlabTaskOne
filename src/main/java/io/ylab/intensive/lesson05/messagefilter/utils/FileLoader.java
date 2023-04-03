@@ -28,9 +28,7 @@ public class FileLoader {
         this.dataSource = dataSource;
     }
 
-    private final File fileWithWord = new File("bad_words.txt");
-
-    public int loadFileToDB(String fileName) {
+    public void loadFileToDB(String fileName) {
         int countWords = 0;
         try (Scanner scanner = new Scanner(new File(fileName));
              Connection connection = dataSource.getConnection();
@@ -40,9 +38,6 @@ public class FileLoader {
             connection.setAutoCommit(false);
             while (scanner.hasNext()) {
                 String word = scanner.nextLine().trim();
-                if (word == null) {
-                    continue;
-                }
                 statement.setString(1, word);
                 statement.addBatch();
                 countWords++;
@@ -61,7 +56,6 @@ public class FileLoader {
             LOGGER.error(e.getMessage());
             throw new RuntimeException(e);
         }
-        return countWords;
     }
 
     private void createTable() throws SQLException {

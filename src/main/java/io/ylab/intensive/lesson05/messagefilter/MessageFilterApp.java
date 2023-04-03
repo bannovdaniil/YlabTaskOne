@@ -27,13 +27,12 @@ public class MessageFilterApp {
 
         LOGGER.info(" [*] Waiting for messages");
 
-        //   messenger.purgeOutputQueue();
+           messenger.purgeOutputQueue();
         while (!Thread.currentThread().isInterrupted()) {
             Optional<String> message = messenger.receiveMessage();
             if (message.isPresent()) {
                 System.out.println(message);
-                System.out.println(censoringMessage.replaceBadWords(message.orElseGet(() -> "")));
-                messenger.sendMessage(censoringMessage.replaceBadWords(message.orElseGet(() -> "")));
+                messenger.sendMessage(censoringMessage.replaceBadWords(message.orElse("")));
             }
         }
 
