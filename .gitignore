@@ -1,26 +1,19 @@
-out/
-.class
+*.txt
+!bad_words.txt
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
 ### STS ###
 .apt_generated
-.classpath
 .factorypath
-.project
 .settings
 .springBeans
 .sts4-cache
-
 ### IntelliJ IDEA ###
-.idea
 *.iws
-*.iml
 *.ipr
-
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -30,6 +23,22 @@ target/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
-
 ### VS Code ###
 .vscode/
+/org.eclipse.jdt.core.prefs
+/org.eclipse.m2e.core.prefs
+/org.eclipse.core.resources.prefs
+resourcesDev
+javaDev
+*.iml
+.idea
+target
+.classpath
+.project
+.checkstyle
+/.settings/
+/.springBeans
+/local_configs
+/bin
+java.generated
+application.properties
