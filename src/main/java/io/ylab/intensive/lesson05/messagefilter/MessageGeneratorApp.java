@@ -37,7 +37,7 @@ public class MessageGeneratorApp {
             messenger.prepareMessage(message);
         }
 
-        String message = "eблантий, eблантий, eблантий2, 2eблантий+ eблантий! фывафыва елдак\nелдак\n!eблантий! Eблантий EблаНтий eблантиЙ eблантий";
+        String message = "fuck fuck! fuck? fucker; fucking, fuck\nfucking\n!fucker! Fucking fucK afuck fucki";
         messenger.prepareMessage(message);
 
 
