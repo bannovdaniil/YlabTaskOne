@@ -5,7 +5,7 @@ import io.ylab.intensive.lesson04.eventsourcing.model.Person;
 import java.util.List;
 
 public interface PersonApi {
-    void deletePerson(Long personId);
+  void deletePerson(Long personId);
 
     void savePerson(Long personId, String firstName, String lastName, String middleName);
 

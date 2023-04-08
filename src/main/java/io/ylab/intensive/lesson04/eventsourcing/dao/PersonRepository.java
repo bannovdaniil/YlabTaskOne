@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface PersonRepository {
 
-    void delete(Long personId);
+  void delete(Long personId);
 
     void save(Person person);
 
